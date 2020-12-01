@@ -1,0 +1,114 @@
+ENV
+
+export VAULT_DEV_ROOT_TOKEN_ID="s.shkGr5jK553llrOCFW4MaCEM"
+export VAULT_ADDR=http://127.0.0.1:8200
+
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+sudo apt-get update && sudo apt-get install vault
+
+#TEST
+
+mkdir -p $HOME/.vault/data
+chown -R vaultron $HOME
+
+vault server -config=config.hcl
+
+# Unseal Key 1: 3CnoBWGG372MFEfSiZVZSrbjavG9xu8NJbtdFkAq5r3L
+# Unseal Key 2: tCDjzSlPq0NVm7A244EyBEXfHTvpq4eL8i4YDABt537d
+# Unseal Key 3: EkQRH5QW/YO4fnoCq4nfAGTCc+PjIoHDpHD9kA+3kPIX
+# Unseal Key 4: K3LI58vX8klMMMKXqj/iTpFvaz2fmpeErJSVw0njjGyk
+# Unseal Key 5: 967CxdTfxh6q43WB7a2M0OnmFY6S8KeeY1VUhltMTNhP
+
+Initial Root Token: s.rXkgj0DEcwy8aGs6yxH9nQbs
+
+
+as_mg: f7333bd79066
+vault operator unseal:
+
+  Every initialized Vault server starts in the sealed state. 
+  From the configuration, Vault can access the physical storage, but it can't read any of it because it doesn't know how to decrypt it. 
+  The process of teaching Vault how to decrypt the data is known as unsealing the Vault.
+
+  Unsealing has to happen every time Vault starts. 
+  It can be done via the API and via the command line. 
+  To unseal the Vault, you must have the threshold number of unseal keys. 
+  In the output above, notice that the "key threshold" is 3. 
+  This means that to unseal the Vault, you need 3 of the 5 keys that were generated.
+
+Also notice that the unseal process is stateful. 
+You can go to another computer, use vault operator unseal, and as long as it's pointing to the same server, the other computer can continue the unseal process. 
+This is incredibly important to the design of the unseal process: multiple people with multiple keys are required to unseal the Vault. The Vault can be unsealed from multiple computers and the keys should never be together. 
+A single malicious operator does not have enough keys to be malicious.
+
+vault login <root_token>
+vault policy write moltres  moltres-policy.hcl
+vault secrets enable -path="sats" kv
+vault kv put sats/onyx/password      secret=u123ikLp8#1*
+
+vault kv put sats/articuno/bitcoind/rpc      secret=sats:snakeoil_pass_the_mustard
+vault kv put sats/mew/fullchain      secret=@/home/vaultron/.ssl/fullchain.pem
+vault kv put sats/mew/privkey        secret=@/home/vaultron/.ssl/privkey.pem
+vault kv put sats/ditto/firebase/privkey secret=@fbpk.pem
+
+!!! REMEMBER TO USE NO  DEFAULT POLICY !!!
+vault token create --policy=moltres --no-default-policy
+!!! REMEMBER TO USE NO  DEFAULT POLICY !!!
+
+GET SECRET FROM VAULT
+curl --header "X-Vault-Token: s.14kxS8oWjUI6ygAlhRuOXNrc"    https://vault.sats.cc/v1/kv-v1/articuno/bitcoind/rpc
+curl -X POST --header "X-Vault-Token: s.2HrjGKnSY11DlDNWjNrAfVjn" --data {'secret': 'testesh'}   https://vault.sats.cc/v1/kv-v1/charmander/wif
+
+response:
+  {
+    "request_id":"7c19e398-31a4-fd0a-65f6-fbe63f193f0e",
+    "lease_id":"",
+    "renewable":false,
+    "lease_duration":36000,
+    "data":{
+      "secret":"b64db31a0b58b095833d461a96e92fac328865ecda3e8b7c2a6ad1459f53a5d7"
+    },
+    "wrap_info":null,
+    "warnings":null,
+    "auth":null
+  }
+
+
+# Read-only permit
+path "kv-v1/v1/test/esh" {
+  capabilities = [ "read" ]
+}
+
+# Read-only permit
+path "kv-v1/prod/certs/api" {
+  capabilities = [ "read" ]
+}
+
+
+# FOR SSL CERT & BITCOIN WALLET SETUP CREATE A SHORT LIVED TOKEN
+vault token create -policy="mew" --no-default-policy --ttl=5m
+vault token create -policy="charmander" --no-default-policy --ttl=5m
+
+
+vault policy write apps apps-policy.hcl
+
+vault token create -policy="apps"
+Key                  Value
+---                  -----
+token                s.8vt4sPfuoXREn7Tefqj9um70
+token_accessor       0tKp7RE4dckM1sKtrz6qi1x4
+token_duration       768h
+token_renewable      true
+token_policies       ["apps" "default"]
+identity_policies    []
+policies             ["apps" "default"]
+
+#TO AVOID TYPING KEY IN CMD
+
+$ vault kv put kv-v1/moltres=-
+
+AAaaBBccDDeeOTXzSMT1234BB_Z8JzG7JkSVxI
+<Ctrl+d>
+
+export HISTIGNORE="&:vault*"

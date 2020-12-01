@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [ $# -lt 5 ]
+then
+ printf "\nWrong Usage: Not enough arguments.\nusage:\n./spawn.bash project_name new_resource_name cpu memory reigon\n\n\n"
+ exit 1
+fi
+
+# login
+# doctl auth init API_KEY
+PROJECT_NAME=$1
+RESOURCE_NAME=$2
+CPU_ALLOC=$3
+MEM_ALLOC=$4
+REIGON_ALLOC=$5
+IMAGE=""
+PROJECT_ID=$(doctl projects ls | grep $PROJECT_NAME | awk '{print $1}')
+
+printf "$PROJECT_ID\n"
+
+printf "\nDisplaying current project resource URNs\n"
+doctl projects resources ls $PROJECT_ID | awk '{if (NR!=1) print $1}' 
+printf "\nDisplaying sats-mon staging server resource as exmaple spawn entity\n"
+
+doctl projects resources get "do:droplet:161103201"
+
+
+printf "\nDisplaying all droplet ID's within $PROJECT_NAME\n"
+
+doctl compute droplet ls | awk '{if (NR!=1) print$1}'
+
+printf "\nCreating a new droplet...\n"
+
+doctl compute droplet create $RESOURCE_NAME \
+--size s-1vcpu-1gb \
+--enable-backups \
+--enable-monitoring \
+--enable-private-networking \
+--image $IMAGE \
+--reigon $REIGON_ALLOC \
+
+--tag-name $TAG \
+--wait
+
+exit 0;

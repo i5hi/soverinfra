@@ -1,0 +1,16 @@
+apt-get update
+apt-get install clamav clamav-base clamav-daemon clamav-freshclam clamav-milter clamdscan clamassassin
+# add to /etc/clamav/clamd.conf
+TCPSocket 3310
+TCPAddr 127.0.0.1
+
+# add to /etc/systemd/system/clamav-daemon.socket.d/extend.conf
+ListenStream=127.0.0.1:3310
+
+service clamav-daemon restart
+netstat -pan | grep 3310
+clamscan -v FILE
+
+
+
+

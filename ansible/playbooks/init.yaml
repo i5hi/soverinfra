@@ -1,0 +1,25 @@
+- hosts: sats
+  gather_facts: false
+  vars:
+    password: $6$mysecretsalt$qJbapG68nyRab3gxvKWPUcs2g3t0oMHSHMnSKecYNpSi3CuZm.GbBqXO8BE6EI6P1JUefhA0qvD7b5LSh./PU1
+
+  tasks:
+    - user: name=sushi password={{ password }}
+      
+    - user: name=bitcoin password={{ password }}
+      
+    - user: name=nginx password={{ password }}
+    
+    - user: name=mongodb password={{ password }}
+  
+    - user:
+        name: postfix
+        state: present
+        createhome: no 
+        groups: opendkim       
+
+    - user:
+        name: opendkim
+        state: present
+        createhome: no   
+        group: opendkim 

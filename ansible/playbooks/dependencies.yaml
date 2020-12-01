@@ -1,0 +1,60 @@
+- hosts: sats
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+    user_home: /media/user/persistence
+    vault_ssl_token: ""
+  tasks:
+    
+    - name: Copy mongod.conf WITH auth
+      copy: 
+        src: "{{ home_folder }}/linux20/mongo/mongod.conf"
+        dest: /etc/mongod.conf
+        owner: mongodb
+        mode: 0700
+
+    - name: Copy nginx.conf
+      copy: 
+        src: "{{ home_folder }}/linux20/nginx/nginx.conf"
+        dest: /etc/nginx/nginx.conf
+
+    - name: Change permissions of a file/folder
+      file: 
+        path: /etc/nginx
+        state: directory
+        owner: nginx
+        group: nginx
+        mode: 0700
+        recurse: true
+        
+    - name: Change permissions of mongo log
+      file: 
+        path: /var/log/mongodb
+        state: directory
+        owner: mongodb
+        group: mongodb
+        mode: 0755
+        recurse: true
+        
+        
+    - name: Copy php.ini
+      copy: 
+        src: "{{ home_folder }}/linux20/nginx/php.ini"
+        dest: /etc/php.ini
+
+    - name: Get ssl certificates from vault
+      script: "{{ home_folder }}/linux20/nginx/certs.bash {{ vault_ssl_token }}"
+
+    - name: Start mongod
+      shell: mongod -f /etc/mongod.conf
+
+
+    - name: Reload service nginx
+      service:
+        name: nginx
+        state: reloaded
+
+    - name: Start bitcoind
+      command: bitcoind -conf=/mnt/s5persistence/bitcoin/.bitcoin/bitcoin.conf -datadir=/mnt/s5persistence/bitcoin/.bitcoin
+
+      

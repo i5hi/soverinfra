@@ -1,0 +1,91 @@
+- hosts: sats
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+    user_home: /media/user/persistence
+  tasks:
+    - name: Change hosts 
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/hosts"
+        dest: /etc/hosts
+        owner: root
+
+    - name: Change hostname   
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/hostname"
+        dest: /etc/hostname
+        owner: postfix
+        mode: 700
+ 
+    - name: Copy postfix main.cf   
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/main.cf"
+        dest: /etc/postfix/main.cf
+        owner: postfix
+        mode: 700
+
+    - name: Copy postfix master.cf   
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/master.cf"
+        dest: /etc/postfix/master.cf
+        owner: postfix
+        mode: 700
+        
+    - name: Create opendkim working dir
+      shell: | 
+        mkdir -p /etc/opendkim/keys && \
+        chown -R opendkim:opendkim /etc/opendkim && \
+        chmod go-rw /etc/opendkim/keys
+
+    - name: Copy opendkim.conf
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/opendkim.conf"
+        dest: /etc/opendkim.conf
+        owner: opendkim
+        mode: 700
+
+    - name: Copy default/opendkim
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/opendkim"
+        dest: /etc/default/opendkim
+        owner: opendkim
+        mode: 700
+
+    - name: Copy key.table
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/key.table"
+        dest: /etc/opendkim/key.table
+        owner: opendkim
+        mode: 700
+
+    - name: Copy trusted.hosts
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/trusted.hosts"
+        dest: /etc/opendkim/trusted.hosts
+        owner: opendkim
+        mode: 700
+
+    - name: Copy signing.table
+      copy: 
+        src: "{{ home_folder }}/linux20/postfix/signing.table"
+        dest: /etc/opendkim/signing.table
+        owner: opendkim
+        mode: 700
+
+    - name: Generate opendkim keys
+      shell: |
+        mkdir /etc/opendkim/keys/api.sats.cc && \
+        opendkim-genkey -b 2048 -d api.sats.cc -D /etc/opendkim/keys/api.sats.cc -s sendonly -v && \
+        chown opendkim:opendkim /etc/opendkim/keys/api.sats.cc/sendonly.private && \
+        cat /etc/opendkim/keys/api.sats.cc/sendonly.txt
+
+    - name: Test keys
+      shell: opendkim-testkey -d api.sats.cc -s sendonly -vvv
+
+    - name: Create spool
+      shell: |
+        mkdir /var/spool/postfix/opendkim && \
+        chown opendkim:postfix /var/spool/postfix/opendkim
+
+    - name: Restart opendkim & postfix
+      shell: systemctl restart opendkim postfix

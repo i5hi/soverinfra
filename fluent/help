@@ -1,0 +1,70 @@
+Elasticsearch data is stored in the /var/lib/elasticsearch directory. 
+Configuration files are located in /etc/elasticsearch
+Java start-up options can be configured in the /etc/default/elasticsearch file.
+
+
+fluntd.conf
+
+/etc/td-agent/td-agent.conf
+
+# Listen to incoming data over SSL
+<source>
+  type secure_forward
+  shared_key FLUENTD_SECRET
+  self_hostname logs.example.com
+  cert_auto_generate yes
+</source>
+
+# Store Data in Elasticsearch
+<match *.**>
+  type copy
+  <store>
+    type elasticsearch
+    host localhost
+    port 9200
+    include_tag_key true
+    tag_key @log_name
+    logstash_format true
+    flush_interval 10s
+  </store>
+  
+</match>
+
+
+
+nginx soups
+
+echo "kibadmin:`openssl passwd -apr1`" | sudo tee -a /etc/nginx/htpasswd.users
+mv /etc/nginx/sites-available/default /etc/nginx/sites-available/original_backup_default
+nano /etc/nginx/sites-available/default
+
+NOTES ON TIME
+
+ENSURE ALL LOG TIMES ARE SUBMITTED IN A UNIFIED TIME AND CONVERTED TO SPECIFIC TIME AT THE CLIENT SIDE
+
+server {
+    listen 80;
+
+    server_name <YourKibanaIP>;
+
+    auth_basic "Restricted Access";
+    auth_basic_user_file /etc/nginx/htpasswd.users;
+
+    location / {
+        proxy_pass http://localhost:5601;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;        
+    }
+}
+
+$KIBANA_HOME/config
+echo "kibadmin:`openssl passwd -apr1`" | sudo tee -a /etc/nginx/htpasswd.users
+
+
+curl -XGET 'localhost:9200/_cat/indices?v&pretty'
+
+DO TUT: EFK
+https://www.digitalocean.com/community/tutorials/elasticsearch-fluentd-and-kibana-open-source-log-search-and-visualization

@@ -1,0 +1,18 @@
+{
+  "registry.terraform.io/-/cloudflare": {
+    "hash": "h1:xPvUyKmw21YRkFeaKif8jf+DrF6FfBbG2AYqbTf7S2s=",
+    "version": "2.10.1"
+  },
+  "registry.terraform.io/-/digitalocean": {
+    "hash": "h1:VNz0Gte3Rmd/yhUh96FuStEXJWRYx8x2LMolm54U7Rw=",
+    "version": "1.22.2"
+  },
+  "registry.terraform.io/digitalocean/digitalocean": {
+    "hash": "h1:VNz0Gte3Rmd/yhUh96FuStEXJWRYx8x2LMolm54U7Rw=",
+    "version": "1.22.2"
+  },
+  "registry.terraform.io/terraform-providers/cloudflare": {
+    "hash": "h1:xPvUyKmw21YRkFeaKif8jf+DrF6FfBbG2AYqbTf7S2s=",
+    "version": "2.10.1"
+  }
+}

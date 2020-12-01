@@ -1,0 +1,93 @@
+conf = {
+  "_id": "rs0rigins",
+  "protocolVersion": 1,
+
+  "members": [
+    {
+      "_id": 0,
+      "host": "api.sats.cc:27017",
+    },
+    {
+      "_id": 1,
+      "host": "mon.sats.cc:27017",
+    },
+    {
+      "_id": 2 ,
+      "host": "arb.sats.cc:27017",
+    }]
+}
+conf = {
+  "_id": "rs0rigins",
+  "protocolVersion": 1,
+  "members": [
+    {
+      "_id": 0,
+      "host": "onyx:27017",
+    },
+    {
+      "_id": 1,
+      "host": "golem:27017",
+    },
+    {
+      "_id": 2 ,
+      "host": "geodude:27017",
+    }]
+}
+rs.initiate(conf)
+
+rs.reconfig({
+   "_id": "matrix-rs0",
+  "version": 1,
+  "protocolVersion": 1,
+  "writeConcernMajorityJournalDefault": true,
+  "members": [
+    {
+      "_id": 0,
+      "host": "api.sats.cc:27017",
+      "priority": 21,
+    },
+    {
+      "_id": 1,
+      "host": "mon.sats.cc:27017",
+      "priority": 11,
+    },
+    {
+      "_id": 2 ,
+      "host": "142.93.237.23:27017",
+      "arbiterOnly": true,
+      "buildIndexes": false,
+      "priority": 1,
+    }]
+},{force:true})
+
+
+
+
+# RESET REPLCIA SETS
+
+#1.Convert all nodes to standalone.
+
+# Stop mongod deamon and edit /etc/mongod.conf to comment replSet option.
+
+# Start mongod deamon.
+
+# 2.Use mongodump to backup data for all nodes.
+
+# Reference from mongo docs:
+
+# https://docs.mongodb.com/manual/reference/program/mongodump/
+
+# 3.Log into each node, and drop local database.
+
+# Doing this will delete replica set config on the node.
+
+# Or you can just delete a record in collection system.replset in local db, like it said here:
+
+# https://stackoverflow.com/a/31745150/4242454
+
+# 4.Start all nodes with replSet option.
+
+# 5.On the previous data node (not arbiter), initialize a new replica set.
+
+# 6.Finally, reconfig replica set with rs.reconfig.
+# # 

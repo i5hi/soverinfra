@@ -1,0 +1,18 @@
+- hosts: sats
+  remote_user: sushi
+  become: yes
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+    user_home: /home/user
+  tasks:
+    - name: Change permissions of a file/folder
+      file: 
+        path: /etc/nginx
+        state: directory
+        owner: nginx
+        group: nginx
+        mode: 0700
+        recurse: true
+        
+

@@ -1,0 +1,16 @@
+- hosts: sats
+  remote_user: sushi
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+    user_home: /media/user/persistence
+  tasks:
+    - name: Clear test user collections in mongo
+      copy:
+        src: "{{ user_home }}/infra.sats.cc/mongo/remove_test.js"
+        dest: /home/sushi/
+        owner: sushi
+        mode: 0700
+    
+    - name: Clear test user collections in mongo
+      shell: mongo /home/sushi/remove_test.js

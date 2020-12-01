@@ -1,0 +1,46 @@
+{
+ "builders":[
+  {
+   "type": "linode",
+   "linode_token": "",
+   "image": "linode/debian10",
+   "region": "eu-central",
+   "instance_type": "g6-nanode-1",
+   "instance_label": "packer",
+   "image_label": "sats-base",
+   "image_description": "Init packer for sats.cc monolith image",
+   "ssh_username": "root"
+  }
+ ],
+ "provisioners": [
+  {
+   "type": "file",
+   "source": "./scripts/debian_basics.bash",
+   "destination": "/home/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/setup.bash",
+    "destination": "/home/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/set_aliases.bash",
+    "destination": "/home/"
+  },
+  {
+   "type": "shell",
+   "environment_vars": [
+    "ADMIN_USER=sushi",
+    "OS=debian"
+  ],
+   "scripts": [
+       "./scripts/debian_basics.bash",
+       "./scripts/setup.bash",
+       "./scripts/set_aliases.bash"
+   ]
+  }
+ ]
+}
+
+

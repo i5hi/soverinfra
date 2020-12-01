@@ -1,0 +1,24 @@
+alias edenv="nano /home/sushi/.bashrc"
+alias senv="source /home/sushi/.bashrc"
+alias gooss="sudo /var/ossec/bin/ossec-control start"
+alias nooss="sudo /var/ossec/bin/ossec-control stop"
+alias flogoss="sudo tail -f /var/ossec/logs/alerts/alerts.log"
+alias clogoss="sudo tail -909 /var/ossec/logs/alerts/alerts.log"
+alias cdapp="cd /home/ishi/api.sats.cc/"
+alias cmongod="sudo mongod -f /etc/mongod.conf"
+alias mongoconf="sudo nano /etc/mongod.conf"
+
+export KEY_PATH="/home/sushi/.keys"
+export MOLTRES_PORT="2323"
+export DB_IP="127.0.0.1"
+export DB_PORT="27017"
+export LOGGER_IP="staryu"
+export LOGGER_PORT="9936"
+export BITCOIN_IP="172.17.0.2"
+export BITCOIN_PORT="7777"
+export CLAM_IP="172.17.0.3"
+export CLAM_PORT="3310"
+export KYC_FOLDER='/mnt/s5persistence/profiles/kyc'
+export LOG_FOLDER='/mnt/s5persistence/winston/logs'
+export VAULT_TOKEN="s.14kxS8oWjUI6ygAlhRuOXNrc"
+export NODE_ENV=PROD

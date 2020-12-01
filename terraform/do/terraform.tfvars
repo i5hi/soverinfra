@@ -1,0 +1,13 @@
+token      = ""
+ssh_key    = ""
+admin      = "sushi"
+image      = ""
+label      = ""
+size       = "s-2vcpu-4gb"
+region     = "lon1"
+volume_id  = ""
+
+cf_email   = "vishalmenon.92@gmail.com"
+cf_key     = ""
+cf_token   = ""
+cf_zone_id = "" 

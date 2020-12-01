@@ -1,0 +1,60 @@
+
+{
+ "builders":[
+  {
+   "type": "digitalocean",
+   "api_token": "",
+   "image": "debian-10-x64",
+   "region": "lon1",
+   "size": "s-2vcpu-2gb",
+   "snapshot_name": "sats-base",
+   "ssh_username": "root"
+
+  }
+ ],
+ "provisioners": [
+  {
+   "type": "file",
+   "source": "./scripts/debian_basics.bash",
+   "destination": "/home/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/setup.bash",
+    "destination": "/home/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/set_aliases.bash",
+    "destination": "/home/"
+  },
+  {
+    "type": "file",
+    "source": "./scripts/set_aliases.bash",
+    "destination": "/home/"
+  },
+  {
+   "type": "shell",
+   "environment_vars": [
+    "ADMIN_USER=sushi",
+    "OS=debian"
+  ],
+   "scripts": [
+       "./scripts/debian_basics.bash",
+       "./scripts/setup.bash",
+       "./scripts/set_aliases.bash"
+   ]
+  }
+ ],
+ "post-processors": [
+  [
+    {
+      "output": "manifest.json",
+      "strip_path": true,
+      "type": "manifest"
+    }
+  ]
+]
+}
+
+

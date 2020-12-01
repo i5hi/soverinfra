@@ -1,0 +1,8 @@
+- hosts: sats
+  remote_user: sushi
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+  tasks:
+    - name: Remove kyc0@test.com from db collections
+      command: mongo /home/ishi/linux20/mongo/remove-test-collections.js

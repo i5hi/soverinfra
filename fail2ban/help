@@ -1,0 +1,7 @@
+
+apt-get install fail2ban
+
+cp /etc/fail2ban/jail.conf /etc/fail2ban/local.conf    
+
+
+

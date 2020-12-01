@@ -1,0 +1,147 @@
+We meddle with two main parameters in /etc/mongod.conf
+
+- fork: makes mongod run in the background
+
+- authentication: SEC: This is disabled for the first start and then enabled after we manually configure auth through the mongo shell
+
+compare the default mongod.conf to the one in moltres/infra and just add details for the fork section. 
+
+```
+sudo mongod
+
+mongo
+
+use admin
+#using admin we will create a 'sudo' user who can create sub users and admin any db
+
+db.createUser({
+     user: "useradmin",
+     pwd: "B7sdffZJfsfdoGi346iHy56sjL",
+     roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+ })
+db.createUser( { 
+  user: "root",
+  pwd: "B7sdffZJfsfdoGi346iHy56sjL",
+  roles: [ "userAdminAnyDatabase",
+            "dbAdminAnyDatabase",
+            "readWriteAnyDatabase"
+  ]
+});
+
+db.auth('useradmin','B7sdffZJfsfdoGi346iHy56sjL')
+
+
+db.auth('root','B7sdffZJfsfdoGi346iHy56sjL')
+
+db.createUser({
+     user: "clusterAdmin",
+     pwd: "B7sdffZJfsfdoGi346iHy56sjL",
+     roles: [ { role: "clusterAdmin", db: "admin"} ]
+ })
+
+2020-04-17T20:25:00.092Z
+2020-04-18T01:51:21Z
+db.auth('clusterAdmin','B7sdffZJfsfdoGi346iHy56sjL')
+1
+# The idea is to never use useradmin except to create new users. Each new user has limited permission to their specific db.
+# Create a user for moltres node application with limited access to only sats db
+db.createUser({
+    user: "mon",
+    pwd: "h234p2uil190bHps",
+    roles: [{
+        role: "readWrite",
+        db: "logs"
+    }]
+});
+db.auth('auth_server','ZJfsfdoGi346')
+
+db.auth('mon','h234p2uil190bHps')
+```
+db.grantRolesToUser(
+    "mon",
+    [
+      { role: "read", db: "logs" }
+    ]
+)
+db.grantRolesToUser(
+    "root",
+    [
+      { role: "readWrite", db: "system" }
+    ]
+)
+Now you can enable authentication in /etc/mongod.conf 
+Ensure you set the db user name and password in .bashrc for the node application. Refer to vars.env 
+
+
+//_REPLICA SET INIT
+
+// on each member server run:
+mongod --port 27017 --dbpath /data/db --replSet matrix_rs0 --bind_ip localhost,api.sats.cc
+
+
+// create keyfiles to share between replset members
+openssl rand -base64 756 > $HOME/.keys/mongo &&
+chmod 400 $HOME/.keys/mongo
+
+
+rs.initiate( {
+   _id : "sats.cc",
+   members: [
+      { _id: 0, host: "localhost:27017" },
+      { _id: 1, host: "localhost:27017" },
+      { _id: 2, host: "localhost:27017" }
+   ]
+})
+
+// encryption at rest
+
+mongod --enableEncryption --kmipServerName <KMIP Server HostName> \
+  --kmipPort <KMIP server port> --kmipServerCAFile ca.pem \
+  --kmipClientCertificateFile client.pem
+
+
+sudo docker run  \
+  -e MONGO_INITDB_ROOT_USERNAME=admin-user \
+  -e MONGO_INITDB_ROOT_PASSWORD=admin-password \
+  -e MONGO_INITDB_DATABASE=sats \
+  --name onyx --network host onyx
+
+
+
+  // DOCKER REPLICA SET 
+
+  docker pull mongo
+  docker network ls
+  docker network create mongo-cluster
+
+sudo docker run \
+-d \
+-p 30001:27017 \
+--name mongo1 \
+--net mongo-cluster \
+mongo \
+mongod --replSet rs0rigins
+
+sudo docker run \
+-d \
+-p 30002:27017 \
+--name mongo2 \
+--net mongo-cluster \
+mongo mongod --replSet rs0rigins
+
+sudo docker run \
+-d \
+-p 30003:27017 \
+--name mongo3 \
+--net mongo-cluster \
+mongo mongod --replSet rs0rigins
+
+# get into the containers shell to rs.initiate()
+docker exec -it mongo1 mongo
+// using onyx
+ docker run --name onyx -v /data/db:/data/db -d mongo --config /etc/mongo/mongod.conf
+
+
+// TLS
+
+sudo cat /etc/letsencrypt/live/api.sats.cc/{fullchain.pem,privkey.pem} | sudo tee /etc/ssl/mongo.pem

@@ -1,0 +1,5 @@
+#backup
+sudo cp /var/lib/dpkg/status status.bkp
+
+#Remove naughty packages
+sudo nano /var/lib/dpkg/status

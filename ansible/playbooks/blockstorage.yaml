@@ -1,0 +1,8 @@
+- hosts: sats
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+  tasks:
+    - name: Mount s5persistence block storage volume
+      shell: |
+        echo "copy commands from block storage provider"

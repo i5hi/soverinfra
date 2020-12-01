@@ -1,0 +1,61 @@
+version: "3.7"
+
+services:
+  onyx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: onyx
+    container_name: onyx
+    restart: unless-stopped
+
+    command: --f /etc/mongod.conf
+    ports:
+      - "30001:27017"
+    volumes:
+      - onyx_data:/data/db
+    networks:
+      - mongo-cluster
+
+  golem:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: golem
+    container_name: golem
+    restart: unless-stopped
+
+        command: --f /etc/mongod.conf
+
+    ports:
+      - "30002:27017"
+    volumes:
+      - golem_data:/data/db
+    networks:
+      - mongo-cluster
+
+  geodude:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: geodude
+    container_name: geodude
+    restart: unless-stopped
+
+        command: --f /etc/mongod.conf
+
+        
+    ports:
+      - "30003:27017"
+    volumes:
+      - geodude_data:/data/db
+    networks:
+      - mongo-cluster
+
+volumes:
+  onyx_data:
+  golem_data:
+  geodude_data:
+networks:
+  mongo-cluster:
+    driver: bridge

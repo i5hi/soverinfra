@@ -1,0 +1,13 @@
+- hosts: sats
+  remote_user: sushi
+  become: yes
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+    user_home: /media/user/persistence
+  tasks:
+    - name: Use as a template for every new session
+      shell: echo "Structure your work on production"
+      register: output
+    - debug: var=output.stdout_lines
+

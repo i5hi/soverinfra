@@ -1,0 +1,23 @@
+- hosts: sats
+  gather_facts: false
+  vars: 
+    user_home: /media/user/persistence
+  tasks:
+    - authorized_key:
+        user: sushi
+        state: present
+        manage_dir: yes
+        key: "{{ lookup('file', '{{ home_folder }}/.ssh/staging.pub')}}"
+
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#?AuthenticationMethods' line='AuthenticationMethods publickey'
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line='PermitRootLogin No'      
+    - lineinfile: dest=/etc/ssh/sshd_config regexp='^#Port' line='Port 22909'      
+  
+    - file: 
+        path: /home/sushi
+        state: directory
+        owner: sushi
+        mode: u+rwx,g-rwx,o-rwx
+        recurse: yes
+      
+      # remove /root/.ssh/authorized_keys

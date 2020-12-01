@@ -1,0 +1,1 @@
+sendonly._domainkey.api.sats.cc    api.sats.cc:sendonly:/etc/opendkim/keys/api.sats.cc/sendonly.private
