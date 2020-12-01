@@ -4,13 +4,13 @@
     ansible_python_interpreter: /usr/bin/python
     gituser: "vmenond"
     gitpass: "5ushiandghostboy"
-    infra_destination: "/home/sushi/linux20"
+    infra_destination: "/home/sushi/soverinfra"
 
   tasks:
 
-    - name: Pull linux20
+    - name: Pull soverinfra
       git:
-        repo: "https://{{gituser}}:{{gitpass}}@github.com/vmenond/linux20.git"
+        repo: "https://{{gituser}}:{{gitpass}}@github.com/vmenond/soverinfra.git"
         dest: "{{ infra_destination }}"
       
       

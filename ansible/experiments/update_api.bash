@@ -5,5 +5,5 @@ git add .
 git commit -am "auto update"
 git push
 
-cd /home/ishi/infra.sats.cc/ansible/experiments
+cd /home/ishi/soverinfra/ansible/experiments
 ansible-playbook  update_api.yaml

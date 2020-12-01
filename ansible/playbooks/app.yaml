@@ -26,7 +26,7 @@
 
     - name: Copy final.bash WITH auth
       copy: 
-        src: "{{ user_home }}/infra.sats.cc/final.bash"
+        src: "{{ user_home }}/soverinfra/final.bash"
         dest: /home/sushi/
         owner: sushi
         mode: u+rwx,g-rwx,o-rwx

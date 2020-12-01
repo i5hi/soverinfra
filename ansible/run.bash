@@ -2,7 +2,7 @@
 
 # mail requires user to input new IP from terraform in postfix/hostname
 
-cd $HOME/linux20/ansible/playbooks
+cd $HOME/soverinfra/ansible/playbooks
 # # ssh as root for setup
 #ansible-playbook init.yaml
 #ansible-playbook mail.yaml
@@ -21,6 +21,6 @@ sed -i "4s/.*/$REPLACE_USER/" $HOME/.ssh/config
 
 ansible-playbook app.yaml
 echo "\n\n\n*****************************\n!!Get in there and run final!!*****************************\n"
-# for now /home/ishi/linux20/final.bash has to be run manually cuz 
+# for now /home/ishi/soverinfra/final.bash has to be run manually cuz 
 # for some reason ansible runs node under sh and ENV varibales arent being captured
 

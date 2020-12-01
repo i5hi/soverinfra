@@ -8,14 +8,14 @@
     
     - name: Copy mongod.conf WITH auth
       copy: 
-        src: "{{ home_folder }}/linux20/mongo/mongod.conf"
+        src: "{{ home_folder }}/soverinfra/mongo/mongod.conf"
         dest: /etc/mongod.conf
         owner: mongodb
         mode: 0700
 
     - name: Copy nginx.conf
       copy: 
-        src: "{{ home_folder }}/linux20/nginx/nginx.conf"
+        src: "{{ home_folder }}/soverinfra/nginx/nginx.conf"
         dest: /etc/nginx/nginx.conf
 
     - name: Change permissions of a file/folder
@@ -39,11 +39,11 @@
         
     - name: Copy php.ini
       copy: 
-        src: "{{ home_folder }}/linux20/nginx/php.ini"
+        src: "{{ home_folder }}/soverinfra/nginx/php.ini"
         dest: /etc/php.ini
 
     - name: Get ssl certificates from vault
-      script: "{{ home_folder }}/linux20/nginx/certs.bash {{ vault_ssl_token }}"
+      script: "{{ home_folder }}/soverinfra/nginx/certs.bash {{ vault_ssl_token }}"
 
     - name: Start mongod
       shell: mongod -f /etc/mongod.conf

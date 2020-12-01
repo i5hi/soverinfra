@@ -5,4 +5,4 @@
     ansible_python_interpreter: /usr/bin/python
   tasks:
     - name: Remove kyc0@test.com from db collections
-      command: mongo /home/ishi/linux20/mongo/remove-test-collections.js
+      command: mongo /home/ishi/soverinfra/mongo/remove-test-collections.js

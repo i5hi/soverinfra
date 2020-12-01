@@ -6,27 +6,27 @@
   tasks:
     - name: Change hosts 
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/hosts"
+        src: "{{ home_folder }}/soverinfra/postfix/hosts"
         dest: /etc/hosts
         owner: root
 
     - name: Change hostname   
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/hostname"
+        src: "{{ home_folder }}/soverinfra/postfix/hostname"
         dest: /etc/hostname
         owner: postfix
         mode: 700
  
     - name: Copy postfix main.cf   
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/main.cf"
+        src: "{{ home_folder }}/soverinfra/postfix/main.cf"
         dest: /etc/postfix/main.cf
         owner: postfix
         mode: 700
 
     - name: Copy postfix master.cf   
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/master.cf"
+        src: "{{ home_folder }}/soverinfra/postfix/master.cf"
         dest: /etc/postfix/master.cf
         owner: postfix
         mode: 700
@@ -39,35 +39,35 @@
 
     - name: Copy opendkim.conf
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/opendkim.conf"
+        src: "{{ home_folder }}/soverinfra/postfix/opendkim.conf"
         dest: /etc/opendkim.conf
         owner: opendkim
         mode: 700
 
     - name: Copy default/opendkim
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/opendkim"
+        src: "{{ home_folder }}/soverinfra/postfix/opendkim"
         dest: /etc/default/opendkim
         owner: opendkim
         mode: 700
 
     - name: Copy key.table
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/key.table"
+        src: "{{ home_folder }}/soverinfra/postfix/key.table"
         dest: /etc/opendkim/key.table
         owner: opendkim
         mode: 700
 
     - name: Copy trusted.hosts
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/trusted.hosts"
+        src: "{{ home_folder }}/soverinfra/postfix/trusted.hosts"
         dest: /etc/opendkim/trusted.hosts
         owner: opendkim
         mode: 700
 
     - name: Copy signing.table
       copy: 
-        src: "{{ home_folder }}/linux20/postfix/signing.table"
+        src: "{{ home_folder }}/soverinfra/postfix/signing.table"
         dest: /etc/opendkim/signing.table
         owner: opendkim
         mode: 700
